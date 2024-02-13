@@ -22,21 +22,10 @@ shell("cls")
 # shell("clear")
 # Clearing the environment of previous variables
 rm(list=ls()) 
-cat()
-# path <- c("C:/Users/hughm/OneDrive - VUMC/General - Cochlear Implant Cognition and Communication Lab/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant/CI200- McClure/06.08.2023- preop/Gorilla Tasks/TalkerDiscrim",
-#           "C:/Users/hughm/OneDrive - VUMC/General - Cochlear Implant Cognition and Communication Lab/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant/CI200- McClure/09.07.2023- 1 month/CI200_9.7.2023/Gorilla/Talker",
-#           "C:/Users/hughm/OneDrive - VUMC/General - Cochlear Implant Cognition and Communication Lab/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant/CI201- Larson/2023.08.14- 1 month/Gorilla Tasks CI201 1 Month/Talker",
-#           "C:/Users/hughm/OneDrive - VUMC/General - Cochlear Implant Cognition and Communication Lab/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant/CI202- Raybon/7.28.2023- preop/CI202-Tasks/Gorilla Tasks/TalkerDiscrim",
-#           "C:/Users/hughm/OneDrive - VUMC/General - Cochlear Implant Cognition and Communication Lab/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant/CI202- Raybon/09.27.2023- 1 month/Gorilla/Talker Discrim",
-#           "C:/Users/hughm/OneDrive - VUMC/General - Cochlear Implant Cognition and Communication Lab/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant/CI203- Luttman/08.31.2023- preop/Gorilla/Talker",
-#           "C:/Users/hughm/OneDrive - VUMC/General - Cochlear Implant Cognition and Communication Lab/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant/CI204- Hamm/09.06.2023- preop/CI204_9.6.2023/Gorilla/Talker Disc"
-#           )
-# participant <- c("CI200-Preop","CI200-1mo","CI201-1mo","CI202-preop","CI202-1mo","CI203-preop","CI204-preop")
 
-# path <- "C:/Users/hughm/OneDrive - Belmont University/Personal/Desktop/VUMC/R01R21/Data"
-
-path <- "C:/Users/hughm/OneDrive - VUMC/General - Cochlear Implant Cognition and Communication Lab/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant/CI200- McClure/02.12.2024- 6 month/Gorilla Tasks/Talker Discrimination"
-participant <- c("CI200_6_month_Best_Aided")
+path <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant"
+participant <- c("CI200")
+date <- ("6 month")
 # Setting the unwanted columns shared between spreadsheets
 gorillaColumns <- c("Event Index","UTC Timestamp","UTC Date and Time","Local Timezone","Experiment ID","Experiment Version",
                     "Tree Node Key","Repeat Key","Schedule ID","Participant Private ID","Participant Starting Group",
@@ -47,20 +36,46 @@ gorillaColumns <- c("Event Index","UTC Timestamp","UTC Date and Time","Local Tim
                     "checkpoint-vx9c",	"checkpoint-vpap",	"branch-r1ry",	"branch-usxa",	"branch-r7nz",	"randomiser-spvu",
                     "checkpoint-ylq9",	"checkpoint-cppz",	"randomiser-3ddq","Spreadsheet Name","X Coordinate","Y Coordinate",
                     "Timed Out","display","d","Vocoded","Spreadsheet Row","Screen Number","Screen Name")
+# Setting the working path
+setwd(path)
+# Getting a list of all of the excel files
+files = list.files(full.names = T)
+# Getting rid of the ./
+files <- gsub(x = files, pattern = "./", replacement = "")
+# Getting the folder we need for the participant
+files <- files[grepl(participant, files)]
+# Writing the new path with the folder we just got
+path <- paste0(path,"/",files[1])
+# Setting the working directory to that
+setwd(path)
+# Getting a list of all of the folders
+files = list.files(full.names = T)
+# Getting rid of the ./
+files <- gsub(x = files, pattern = "./", replacement = "")
+# Getting the folder we need for the visit type
+files <- files[grepl(date, files)]
+# Writing our new path to the talker discrimination
+path <- paste0(path,"/",files[1],"/Gorilla Tasks/Talker Discrimination")
+# Setting the new working directory
+setwd(path)
+# Getting a list of all of the files
+files = list.files(full.names = T)
+# Getting rid of the ./
+files <- gsub(x = files, pattern = "./", replacement = "")
+# Getting the files that we need
+files <- files[!grepl("Scored", files)]
 
-p = 1
+f = 1
 
-for(p in 1:length(participant)){
-  setwd(path[p])
-  # Getting a list of all of the excel files
-  files = list.files(full.names = T)
-  # Getting rid of the ./
-  files <- gsub(x = files, pattern = "./", replacement = "")
-  
-  
+for(f in 1:length(files)){
+  if(grepl("task",files[f])){
+    task <- ""
+  } else{
+    task <- gsub(x = files[f], pattern = ".xlsx", replacement = "")
+  }
   
   # Import excel data
-  Data1 <- read_excel(files[1])
+  Data1 <- read_excel(files[f])
   # Removing unwanted shared columns from all spreadsheets
   Data2 <- Data1[,!names(Data1) %in% gorillaColumns]
   
@@ -142,5 +157,9 @@ for(p in 1:length(participant)){
   Data2 <- Data2[,!names(Data2) %in% c("Zone Name","Zone Type","Reaction Onset","Response Type","Attempt","Incorrect","Dishonest","randomise_blocks",
                                        "randomise_trials")]
   # Writing the new excel sheet to the other folder
-  write.xlsx(Data2, paste0("TD ",participant[p],"_Scored.xlsx"),showNA = F)
+  write.xlsx(Data2, paste0("TD_",participant,"_",date,"_",task,"_Scored.xlsx"),showNA = F)
+  
 }
+
+
+
