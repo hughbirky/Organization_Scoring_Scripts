@@ -23,10 +23,33 @@ rm(list=ls())
 shell("cls")
 
 # Participant folder name
-participant <- "CI211_01.31.2024_preop"
+participant <- c("CI200")
+date <- c("6 month")
+move_to_analysis <- T
 
-# Making the current path
-path <- paste0("C:/Users/hughm/OneDrive - Belmont University/Personal/Desktop/VUMC/R01R21/MLST")
+path <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant"
+
+# Setting the working path for data collection
+setwd(path)
+# Getting a list of all of the excel files
+files = list.files(full.names = T)
+# Getting rid of the ./
+files <- gsub(x = files, pattern = "./", replacement = "")
+# Getting the folder we need for the participant
+files <- files[grepl(participant, files)]
+# Writing the new path with the folder we just got
+path <- paste0(path,"/",files[1])
+# Setting the working directory to that
+setwd(path)
+# Getting a list of all of the folders
+files = list.files(full.names = T)
+# Getting rid of the ./
+files <- gsub(x = files, pattern = "./", replacement = "")
+# Getting the folder we need for the visit type
+files <- files[grepl(date, files)]
+# Writing our new path to the talker discrimination
+path <- paste0(path,"/",files[1],"/Gorilla Tasks/MLST")
+
 
 # Setting the unwanted columns shared between spreadsheets
 gorillaColumns <- c("Event Index","UTC Timestamp","UTC Date","UTC Date and Time","Local Timezone","Experiment ID","Experiment Version",
