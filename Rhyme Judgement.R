@@ -20,8 +20,36 @@ shell("cls")
 # Clearing the environment of previous variables
 rm(list=ls()) 
 
-path <- "C:/Users/hughm/OneDrive - Belmont University/Personal/Desktop/VUMC/R01R21/Rhyme_Judgement"
-participant <- c("CI211- preop")
+participant <- c("CI200")
+date <- c("6 month")
+move_to_analysis <- T
+
+path <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant"
+
+# Grabbing the scoring template
+scoringTemplate <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Analysis/Code/Rhyme_Judgement/0Rhyme Judgement scoresheet 8.23.23_updated.xlsx"
+
+
+# Setting the working path for data collection
+setwd(path)
+# Getting a list of all of the excel files
+files = list.files(full.names = T)
+# Getting rid of the ./
+files <- gsub(x = files, pattern = "./", replacement = "")
+# Getting the folder we need for the participant
+files <- files[grepl(participant, files)]
+# Writing the new path with the folder we just got
+path <- paste0(path,"/",files[1])
+# Setting the working directory to that
+setwd(path)
+# Getting a list of all of the folders
+files = list.files(full.names = T)
+# Getting rid of the ./
+files <- gsub(x = files, pattern = "./", replacement = "")
+# Getting the folder we need for the visit type
+files <- files[grepl(date, files)]
+# Writing our new path to the talker discrimination
+path <- paste0(path,"/",files[1],"/Matlab Tasks/RhymeJudgment")
 
 setwd(path)
 # Getting a list of all of the excel files
@@ -30,11 +58,11 @@ files = list.files(full.names = T)
 files <- gsub(x = files, pattern = "./", replacement = "")
 
 ### Reading in the template
-template <- read_excel(files[1])
+template <- read_excel(scoringTemplate)
 # Finding length of the template
 lengthTemp <- length(template$`# TrialWord1`)
 # Import excel data
-Data1 <- read.csv(files[2])
+Data1 <- read.csv(files)
 # Computing length of original column
 length <- length(Data1$X..TrialWord1)
 
