@@ -22,22 +22,32 @@ rm(list=ls())
 # Clearing the console of previous junk
 shell("cls")
 
-# Making the current path
-path <- paste0("C:/Users/hughm/OneDrive - Belmont University/Personal/Desktop/VUMC/R01R21/Vowel_Consonant/",participant[p])
-
-
 
 
 participant <- c("CI200")
 date <- c("6 mo")
 move_to_analysis <- T
 
+# Finding who's computer we are on
+origin <- "C:/Users"
+# Setting the working path for data collection
+setwd(origin)
+# Getting a list of all of the excel files
+files = list.files(full.names = T)
+# Getting rid of the ./
+files <- gsub(x = files, pattern = "./", replacement = "")
+# Getting the folder we need for the participant
+files <- files[grepl("hughm", files)]
 
+if(files == "hughm"){
+  path <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant"
+} else{
+  path <- "f"
+}
 
 
 for(p in 1:length(participant)){
   
-  path <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Data Collection/Subject testing/Cochlear Implant"
   analysis <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Analysis/Scoring/Completed scoring"
   # Setting the unwanted columns shared between spreadsheets
   gorillaColumns <- c("Event Index","UTC Timestamp","UTC Date and Time","Local Timezone","Experiment ID","Experiment Version",
