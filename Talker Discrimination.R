@@ -293,7 +293,7 @@ for(p in 1:length(participant)){
       if(Data2$Gender1[t] == Data2$Gender2[t]){
         Data2$GenderCondition[t] <- "SG"
       } else{
-        Data2$GenderCondition[t] <- "DG"
+        Data2$GenderCondition[t] <- "MG"
       }
     }
     
