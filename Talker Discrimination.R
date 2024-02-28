@@ -11,6 +11,7 @@ library(svDialogs)
 library(stringr)
 library(tibble)
 library(stringdist)
+library(readr)
 
 
 
@@ -21,7 +22,7 @@ shell("cls")
 rm(list=ls())
 
 
-participant <- c("CI211")
+participant <- c("CI216")
 date <- c("preop")
 move_to_analysis <- T
 
@@ -41,10 +42,11 @@ if(files == "hughm"){
 } else{
   path <- "f"
 }
-
+task <- c(NA,NA)
  
-for(p in 1:length(participant)){
-  
+for(d in 1:length(date)){
+  p = 1
+  d = 1
 
   analysis <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Analysis/Scoring/Completed scoring"
   # Setting the unwanted columns shared between spreadsheets
@@ -74,7 +76,7 @@ for(p in 1:length(participant)){
   # Getting rid of the ./
   files <- gsub(x = files, pattern = "./", replacement = "")
   # Getting the folder we need for the visit type
-  files <- files[grepl(date[p], files)]
+  files <- files[grepl(date[d], files)]
   # Writing our new path to the talker discrimination
   path <- paste0(path,"/",files[1],"/Gorilla Tasks/Talker Discrimination")
   # Setting the new working directory
@@ -110,9 +112,12 @@ for(p in 1:length(participant)){
   # Getting rid of the ./
   files1 <- gsub(x = files1, pattern = "./", replacement = "")
   # Getting the folder we need for the visit type
-  files1 <- files1[grepl(date[p], files1)]
+  files1 <- files1[grepl(date[d], files1)]
   # Writing our new path to the talker discrimination
   analysis <- paste0(analysis,"/",files1[1],"/Gorilla Tasks/Talker Discrimination")
+  if(!dir.exists(analysis)){
+    dir.create(analysis)
+  }
   # Setting the new working directory for back to data collection
   setwd(path)
   
@@ -121,7 +126,7 @@ for(p in 1:length(participant)){
   
   
   
-  task <- c(NA,NA)
+  
   
   # Renaming files
   if(length(files) > 1){
@@ -149,9 +154,13 @@ for(p in 1:length(participant)){
   
   
   
-  
+  f= 1
   for(f in 1:length(files)){
+    
     setwd(path)
+    
+    # Getting the files that we need
+    files <- files[!grepl("Scored", files)]
     
     # Import excel data
     Data1 <- read_excel(files[f])
@@ -184,6 +193,25 @@ for(p in 1:length(participant)){
     Data2$Gender2 <- NA
     Data2$GenderCondition <- NA
     
+    
+    # Adding Average Columns
+    Data2$AvgCorrect <- NA
+    Data2$AvgRT <- NA
+    Data2$AvgRating <- NA
+    
+    
+    # Adding Gender Scoring Columns
+    Data2$ST_Score <- NA
+    Data2$ST_RT <- NA
+    Data2$ST_Rating <- NA
+    Data2$DTSG_Score <- NA
+    Data2$DTSG_RT <- NA
+    Data2$DTSG_Rating <- NA
+    Data2$DTMG_Score <- NA
+    Data2$DTMG_RT <- NA
+    Data2$DTMG_Rating <- NA
+
+    
     # Changing Correct Column
     for(z in 1:length(Data2$TalkerAnswer)){
       if(!is.na(Data2$ANSWER[z])){
@@ -192,51 +220,6 @@ for(p in 1:length(participant)){
         }
       }
     }
-    
-    # Creating a new column for average rating
-    Data2$AvgRating <- NA
-    # Making the values numeric
-    Data2$Rating <- as.numeric(Data2$Rating)
-    
-    # Calculating average rating
-    total = 0
-    count <- 0
-    for(i in 1:length(Data2$Rating)){
-      if(grepl("D",Data2$Response[i])){
-        total <- total + Data2$Rating[i]
-        count <- count + 1
-      }
-    }
-    Data2$AvgRating[1] <- total/count
-    
-    
-    
-    
-    # Creating a new column for average response time
-    Data2$AvgRT <- NA
-    # Making the values numeric
-    Data2$`Reaction Time` <- as.numeric(Data2$`Reaction Time`)
-    
-    # Calculating Average Response Time
-    total = 0
-    count <- 0
-    for(i in 1:length(Data2$`Reaction Time`)){
-      if(Data2$Correct[i] == 1 && Data2$`Reaction Time`[i] < 3501){
-        total <- total + Data2$`Reaction Time`[i]
-        count <- count + 1
-      }
-    }
-    Data2$AvgRT[1] <- total/count
-    
-    # Creating a new column for average correct
-    Data2$AvgCorrect <- NA
-    # Making the values numeric
-    Data2$Correct <- as.numeric(Data2$Correct)
-    # Getting the average score
-    Data2$AvgCorrect[1] <- mean(Data2$Correct)
-    
-    
-  
     
     # Swapping Talker1 and Talker2 due to errors in the original spreadsheet
     for(t in 1:length(Data2$Talker1)){
@@ -300,17 +283,115 @@ for(p in 1:length(participant)){
     
     
     
+    # Making the values numeric
+    Data2$Rating <- as.numeric(Data2$Rating)
+    # Making the values numeric
+    Data2$`Reaction Time` <- as.numeric(Data2$`Reaction Time`)
+    # Making the values numeric
+    Data2$Correct <- as.numeric(Data2$Correct)
+    
+    # Running this for each gender and talker in order to score
+    gender <- c("MG","SG")
+    talker <- c("ST","DT")
+    
+    g = 2
+    t = 2
+    # Running this for all iteration
+    for(g in 1:length(gender)){
+      for(t in 1:length(talker)){
+        if(talker[t] != "ST"){
+          # Doing this for different talkers
+          score <- paste0(talker[t],gender[g],"_Score")
+          RT <- paste0(talker[t],gender[g],"_RT")
+          Rating <- paste0(talker[t],gender[g],"_Rating")
+        } else{
+          # Doing this for same talker
+          score <- paste0(talker[t],"_Score")
+          RT <- paste0(talker[t],"_RT")
+          Rating <- paste0(talker[t],"_Rating")
+        }
+        
+        Data3 <- Data2 %>% 
+          filter(GenderCondition == gender[g]) %>%
+          filter(ANSWER == talker[t])
+        
+        
+        # Getting the average score
+        Data2[1,score] <- mean(Data3$Correct)*100
+        
+        # Filtering out the NA's
+        Data4 <- Data3 %>%
+          filter(!is.na(Rating))
+        
+        # Calculating Mean Rating
+        Data2[1,Rating] <- mean(Data4$Rating)
+      
+        # Filtering for reaction time below 3501
+        Data4 <- Data3 %>%
+          filter(`Reaction Time` < 3501)
+        
+        # Calculating mean reaction time
+        Data2[1,RT] <- mean(Data4$`Reaction Time`)
+        
+      }
+    }
+    
+    # Getting the average score
+    Data2[1,"AvgCorrect"] <- mean(Data2$Correct)*100
+    
+    # Filtering out the NA's
+    Data4 <- Data2 %>%
+      filter(ANSWER == "DT") %>%
+      filter(!is.na(Rating))
+    
+    # Calculating Mean Rating
+    Data2[1,"AvgRating"] <- mean(Data4$Rating)
+    
+    # Filtering for reaction time below 3501
+    Data4 <- Data2 %>%
+      filter(`Reaction Time` < 3501)
+    
+    # Calculating mean reaction time
+    Data2[1,"AvgRT"] <- mean(Data4$`Reaction Time`)
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     # Removing extra columns
     Data2 <- Data2[,!names(Data2) %in% c("Zone Name","Zone Type","Reaction Onset","Response Type","Attempt","Incorrect","Dishonest","randomise_blocks",
                                          "randomise_trials")]
     # Writing the new excel sheet to the other folder
-    write.xlsx(Data2, paste0("TD_With_Gender_",participant[p],"_",date[p],"_",task[f],"_Scored.xlsx"),showNA = F)
+    write.xlsx(Data2, paste0("TD_Multiple_Conditions_",participant[p],"_",date[d],"_",task[f],"_Scored.xlsx"),showNA = F)
     
     if(move_to_analysis == T){
       setwd(analysis)
-      write.xlsx(Data2, paste0("TD_With_Gender_",participant[p],"_",date[p],"_",task[f],"_Scored.xlsx"),showNA = F)
+      # Getting a list of all of the files to move old files
+      files2 = list.files(full.names = T)
+      # Getting rid of the ./
+      files2 <- gsub(x = files2, pattern = "./", replacement = "")
+      # Getting the files that we need
+      files2 <- files2[!grepl("Multiple", files2)]
+      files2 <- files2[!grepl("Old", files2)]
+      if(!dir.exists(paste0(analysis,"/Old"))){
+        # Creating an old folder
+        dir.create(paste0(analysis,"/Old"))
+      }
+      if(length(files2) > 0){
+        for(x in 1:length(files2)){
+          # Moving old files
+          file.copy(from = files2[x], to = paste0(analysis,"/Old"))
+          # Deleting file
+          file.remove(files2[x])
+        }
+      }
+      
+      write.xlsx(Data2, paste0("TD_Multiple_Conditions_",participant[p],"_",date[d],"_",task[f],"_Scored.xlsx"),showNA = F)
     }
     
   }

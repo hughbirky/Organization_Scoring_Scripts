@@ -20,8 +20,8 @@ shell("cls")
 # Clearing the environment of previous variables
 rm(list=ls()) 
 
-participant <- c("CI200")
-date <- c("6 month")
+participant <- c("CI216")
+date <- c("preop")
 move_to_analysis <- T
 
 # Finding who's computer we are on
@@ -165,13 +165,32 @@ Rminus <- 1:101
 Rminus <- setdiff(Rminus,Rplus)
 Rminus <- setdiff(Rminus,93)
 
+# Filtering for reaction time below 3501
+Data4 <- Data2[Rplus,] %>% 
+  filter(!is.na(`Correct`)) 
 # Making R+ and R- Scores
-Data2$`% correct R+`[1] <- mean(Data2$Correct[Rplus])*100
-Data2$`% correct R-`[1] <- mean(Data2$Correct[Rminus])*100
-Data2$`Ave RT R+`[1] <- mean(Data2$RT[setdiff(Rplus,93)])
-Data2$`Ave RT R-`[1] <- mean(Data2$RT[setdiff(Rminus,93)])
-Data2$`Tot %  correct`[1] <- mean(Data2$Correct)*100
-Data2$`Tot ave RT`[1] <- mean(Data2$RT[setdiff(1:101,93)])
+Data2$`% correct R+`[1] <- mean(Data4$Correct)*100
+
+Data4 <- Data2[Rminus,] %>% 
+  filter(!is.na(`Correct`)) 
+Data2$`% correct R-`[1] <- mean(Data4$Correct)*100
+
+Data4 <- Data2 %>% 
+  filter(!is.na(`Correct`)) 
+Data2$`Tot %  correct`[1] <- mean(Data4$Correct)*100
+
+
+Data4 <- Data2[setdiff(Rplus,93),] %>%
+  filter(!is.na(`RT`))
+Data2$`Ave RT R+`[1] <- mean(Data4$RT)
+
+Data4 <- Data2[setdiff(Rminus,93),] %>%
+  filter(!is.na(`RT`))
+Data2$`Ave RT R-`[1] <- mean(Data4$RT)
+
+Data4 <- Data2[setdiff(1:101,93),] %>%
+  filter(!is.na(`RT`))
+Data2$`Tot ave RT`[1] <- mean(Data4$RT)
 
 
 

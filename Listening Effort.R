@@ -23,10 +23,10 @@ rm(list=ls())
 shell("cls")
 
 # Participant folder name
-participant <- "2.7.2024"
+participant <- "2.23.2024"
 
 # Making the current path
-path <- "C:/Users/hughm/OneDrive - Belmont University/Personal/Desktop/VUMC/R01R21/Listening Effort"
+path <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Analysis/Code/Listening Effort"
 
 
 # Setting the working directory to the path
@@ -36,10 +36,11 @@ files = list.files(full.names = T)
 # Getting rid of the ./
 files <- gsub(x = files, pattern = "./", replacement = "")
 # Filtering out everything but the file we are trying to score
-files <- files[grep("PredictingSpeechReco",files)]
+files <- files[!grepl("Scored", files)]
+files <- files[!grepl("Old",files)]
 
 # For renaming the record IDs to their actual names
-recordID <- c("Test2","CI200","CI201","CI202","CI203","CI204","CI205","CI206_incomplete","CI207","CI208","CI209","CI210","CI211")
+recordID <- c("Test2","CI200","CI201","CI202","CI203","CI204","CI205","CI206_incomplete","CI207","CI208","CI209","CI210","CI211","CI212","CI213","CI214","CI215","CI216","CI217")
 
 # Making scaled data frame for scaled scoring
 scale <- c(0,9,15,18,21,23,25,27,28,30,31,33,34,35,36,38,39,40,41,42,43,44,45,46,47,48,49,50,

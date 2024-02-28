@@ -24,8 +24,8 @@ shell("cls")
 
 
 
-participant <- c("CI200")
-date <- c("6 mo")
+participant <- c("CI216")
+date <- c("preop")
 move_to_analysis <- T
 
 # Finding who's computer we are on
@@ -353,6 +353,9 @@ for(p in 1:length(participant)){
   Data <- read_excel(files[1])
   Data1 <- read_excel(files[2])
   
+  Data1$`Reaction Time` <- as.double(Data1$`Reaction Time`)
+  Data$`Reaction Time` <- as.double(Data$`Reaction Time`)
+  
   # Binding rows
   Data2 <- bind_rows(Data1,Data)
   
@@ -376,10 +379,12 @@ for(p in 1:length(participant)){
   for(v in 1:length(vowels)){
     # Adding the vowel total column
     for(i in 1:length(Data2$Vowel)){
-      if(Data2$Vowel[i] == vowels[v]){
-        # Adding on value if it meets the condition
-        total <- total + Data2$Correct[i]
-        count <- count + 1
+      if(!is.na(Data2$Vowel[i])){
+        if(Data2$Vowel[i] == vowels[v]){
+          # Adding on value if it meets the condition
+          total <- total + Data2$Correct[i]
+          count <- count + 1
+        }
       }
     }
     

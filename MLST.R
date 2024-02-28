@@ -23,8 +23,8 @@ rm(list=ls())
 shell("cls")
 
 # Participant folder name
-participant <- c("CI200")
-date <- c("6 month")
+participant <- c("CI213")
+date <- c("preop")
 move_to_analysis <- T
 
 # Finding who's computer we are on

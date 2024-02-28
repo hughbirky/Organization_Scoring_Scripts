@@ -25,8 +25,8 @@ shell("cls")
 rm(list=ls()) 
 
 
-participant <- c("CI201")
-date <- c("6 month")
+participant <- c("CI214")
+date <- c("preop")
 move_to_analysis <- T
 
 # Finding who's computer we are on

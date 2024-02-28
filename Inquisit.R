@@ -17,8 +17,8 @@ shell("cls")
 # Clearing the environment of previous variables
 rm(list=ls()) 
 
-participant <- c("CI200")
-date <- c("6 month")
+participant <- c("CI210")
+date <- c("1 mo")
 move_to_analysis <- T
 
 # Finding who's computer we are on
@@ -66,6 +66,7 @@ setwd(path)
 path <- c(path,gsub(x = path, pattern = "Digit Span", replacement = "Stroop"))
 
 i = 1
+p = 1
 for(p in 1:2){
   setwd(path[p])
   files <- list.files(full.names = T)
