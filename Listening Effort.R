@@ -23,10 +23,10 @@ rm(list=ls())
 shell("cls")
 
 # Participant folder name
-participant <- "2.23.2024"
+participant <- "05.17.2024"
 
 # Making the current path
-path <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Analysis/Code/Listening Effort"
+path <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Analysis/Code/R01R21 Scripts/Listening Effort"
 
 
 # Setting the working directory to the path
@@ -40,7 +40,7 @@ files <- files[!grepl("Scored", files)]
 files <- files[!grepl("Old",files)]
 
 # For renaming the record IDs to their actual names
-recordID <- c("Test2","CI200","CI201","CI202","CI203","CI204","CI205","CI206_incomplete","CI207","CI208","CI209","CI210","CI211","CI212","CI213","CI214","CI215","CI216","CI217")
+recordID <- c("Test2","CI200","CI201","CI202","CI203","CI204","CI205","CI206_incomplete","CI207","CI208","CI209","CI210","CI211","CI212","CI213","CI214","CI215","CI216","CI217","CI218","CI219")
 
 # Making scaled data frame for scaled scoring
 scale <- c(0,9,15,18,21,23,25,27,28,30,31,33,34,35,36,38,39,40,41,42,43,44,45,46,47,48,49,50,
@@ -121,4 +121,4 @@ for(l in 1:length(Data$record_id)){
 
 # Writing the new excel sheet to the other folder
 write.xlsx(Data, paste0("Listening_Effort_Scored_",participant,".xlsx"),showNA = F)
-setwd("C:/Users/hughm/OneDrive - Belmont University/Personal/Desktop")
+setwd("C:/Users/hughm/Desktop")

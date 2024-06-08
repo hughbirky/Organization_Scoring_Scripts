@@ -13,21 +13,20 @@ library(tibble)
 library(stringdist)
 
 
-
-### For this script, you will need to do a few things. The first thing is 
-
-# C:/Users/hughm/Dropbox
-# Clearing the console of previous junk
-
 shell("cls")
 # shell("clear")
 # Clearing the environment of previous variables
 rm(list=ls()) 
 
 
-participant <- c("CI214")
-date <- c("preop")
-move_to_analysis <- T
+# Participant folder name
+participant <- c("CI216")
+date <- c("3 mo")
+calDate <- "06.06.2024"
+# date <- c("preop")
+# date <- c("1 mo")
+# date <- c("3 mo")
+# date <- c("6 mo")=
 
 # Finding who's computer we are on
 origin <- "C:/Users"
@@ -202,4 +201,4 @@ setwd(path)
 
 
 # Writing the new excel sheet to the other folder
-write.xlsx(Data2, paste0("LD ",participant," Ordered_Scored.xlsx"),showNA = F)
+write.xlsx(Data2, paste0("LD ",participant,"_",date," Ordered_Scored.xlsx"),showNA = F)

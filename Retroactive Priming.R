@@ -25,8 +25,9 @@ shell("cls")
 rm(list=ls()) 
 
 
-participant <- c("CI210")
-date <- c("1 mo")
+participant <- c("CI203")
+date <- c("6 mo")
+calDate <- "06.05.2024"
 move_to_analysis <- T
 
 # Finding who's computer we are on
@@ -130,7 +131,7 @@ for(d in 1:length(date)){
   Data2 <- Data2 %>% arrange(Prime)
   
   # Reading in the template
-  template <- read_excel("C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Analysis/Code/Retroactive Priming/RetroPriming_Template.xlsx")
+  template <- read_excel("C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Analysis/Code/R01R21 Scripts/Retroactive Priming/RetroPriming_Template.xlsx")
   
   # Adding in extra columns
   Data2$Noise <- template$Noise

@@ -22,8 +22,10 @@ shell("cls")
 rm(list=ls())
 
 
+
 participant <- c("CI216")
-date <- c("preop")
+date <- c("3 mo")
+calDate <- "06.06.2024"
 move_to_analysis <- T
 
 # Finding who's computer we are on

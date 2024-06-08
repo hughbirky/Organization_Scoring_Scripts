@@ -17,8 +17,9 @@ shell("cls")
 # Clearing the environment of previous variables
 rm(list=ls()) 
 
-participant <- c("CI210")
-date <- c("1 mo")
+participant <- c("CI216")
+date <- c("3 mo")
+calDate <- "06.06.2024"
 move_to_analysis <- T
 
 # Finding who's computer we are on

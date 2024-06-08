@@ -13,18 +13,21 @@ library(tibble)
 library(stringdist)
 
 
-
-# Clearing the console of previous junk
 shell("cls")
 # shell("clear")
 # Clearing the environment of previous variables
 rm(list=ls()) 
 
 
+# Participant folder name
 participant <- c("CI216")
 date <- c("3 mo")
 calDate <- "06.06.2024"
-move_to_analysis <- T
+# date <- c("preop")
+# date <- c("1 mo")
+# date <- c("3 mo")
+# date <- c("6 mo")
+
 
 # Finding who's computer we are on
 origin <- "C:/Users"
@@ -44,8 +47,9 @@ if(files == "hughm"){
   path <- "f"
 }
 
-# Grabbing the scoring template
-scoringTemplate <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Analysis/Code/R01R21 Scripts/Rhyme_Judgement/0Rhyme Judgement scoresheet 8.23.23_updated.xlsx"
+
+
+
 
 
 # Setting the working path for data collection
@@ -67,9 +71,11 @@ files <- gsub(x = files, pattern = "./", replacement = "")
 # Getting the folder we need for the visit type
 files <- files[grepl(date, files)]
 # Writing our new path to the talker discrimination
-path <- paste0(path,"/",files[1],"/Matlab Tasks/RhymeJudgment")
-
-
+path <- paste0(path,"/",files[1],"/Matlab Tasks/Sentence Verification Task")
+# Recording for naming
+date_actual <- files[1]
+# Setting the new working directory
+setwd(path)
 
 
 
@@ -94,7 +100,7 @@ files1 <- gsub(x = files1, pattern = "./", replacement = "")
 # Getting the folder we need for the visit type
 files1 <- files1[grepl(date, files1)]
 # Writing our new path to the talker discrimination
-analysis <- paste0(analysis,"/",files1[1],"/Matlab Tasks/Rhyme Judgment")
+analysis <- paste0(analysis,"/",files1[1],"/Matlab Tasks/Sentence Verification Task")
 if(!dir.exists(analysis)){
   dir.create(analysis)
 }
@@ -108,104 +114,100 @@ files = list.files(full.names = T)
 # Getting rid of the ./
 files <- gsub(x = files, pattern = "./", replacement = "")
 
-### Reading in the template
-template <- read_excel(scoringTemplate)
-# Finding length of the template
-lengthTemp <- length(template$`# TrialWord1`)
+
 # Import excel data
-Data1 <- read.csv(files[1])
+Data <- read_excel(files[1])
+
+# Getting rid of empty cells
+Data1 <- Data %>% 
+  filter(!is.na(TrueAnswer))
+Data1$Time <- as.numeric(Data1$Time)
+
+
 # Computing length of original column
-length <- length(Data1$X..TrialWord1)
+length <- length(Data1$ParticipantAnswer)
 
 
+# Adding in the extra columns
+Data1$Correct <- NA
+Data1$RT_filter <- NA
+Data1$Accuracy_TRUE <- NA
+Data1$RT_TRUE <- NA
+Data1$Accuracy_FALSE <- NA
+Data1$RT_FALSE <- NA
+Data1$Accuracy_Total <- NA
+Data1$RT_Total <- NA
 
-# Adding in extra rows to make it 160
-if(length < lengthTemp){
-  for(z in 1:(lengthTemp - length)){
-    Data1[nrow(Data1) + 1,] <- NA
-  }
+# Changing the 1s and 0s to TRUE and FALSE
+if("true" %in% Data1$TrueAnswer){
+  Data1 <- Data1 %>%
+    mutate(TrueAnswer = ifelse(TrueAnswer == "true", TRUE, FALSE))
+} else if(1 %in% Data1$TrueAnswer){
+  Data1 <- Data1 %>%
+    mutate(TrueAnswer = ifelse(TrueAnswer == 1, TRUE, FALSE))
+} else if("TRUE" %in% Data1$TrueAnswer){
+  Data1 <- Data1 %>%
+    mutate(TrueAnswer = ifelse(TrueAnswer == "TRUE", TRUE, FALSE))
 }
 
-# Creating a copy of the data frame
-Data2 <- Data1
 
-i = 1
-# Reorganizing
-for (i in 1:length){
-  # Getting the word to sort
-  word <- Data1$X..TrialWord1[i]
-  # Checking what row that is in the template
-  row <- which(template==word,arr.ind=TRUE)
-  row[1]
-  
-  Data2[row[1],] <- Data1[i,]
-}
-  
-  
+# Scoring
+Data1 <- Data1 %>%
+  mutate(Correct = ifelse(TrueAnswer == ParticipantAnswer, 1, 0))
 
-# Making rows blank otherwise
-for(f in 1:length(Data2$X..TrialWord1)){
-  if(!is.na(Data2$X..TrialWord1[f])){
-    if(template$`# TrialWord1`[f] != Data2$X..TrialWord1[f]){
-      Data2[f,] <- NA
-    }
-  }
+# Filtering for RT_Filter
+for(i in 1:length){
+  if(!is.na(Data1$Correct[i]) && !is.na(Data1$Time[i])){
+    if(Data1$Correct[i] == 1 && Data1$Time[i] < 3.501)
+      Data1$RT_filter[i] = Data1$Time[i]
+  } else {}
 }
 
-# Data2$Time..Seconds.
+# Filtering for Condition
+Data1_True <- Data1 %>%
+  filter(TrueAnswer == TRUE) 
+Data1_False <- Data1 %>%
+  filter(TrueAnswer == FALSE) 
+
+# Calculating mean score
+Data1$Accuracy_TRUE[1] <- mean(Data1_True$Correct)*100
+Data1$Accuracy_FALSE[1] <- mean(Data1_False$Correct)*100
+Data1$Accuracy_Total[1] <- mean(Data1$Correct)*100
+
+# Filtering for wanted reaction time
+Data1_True_RT <- Data1_True %>%
+  filter(Correct == 1) 
+Data1_True_RT <- Data1_True_RT %>%
+  filter(Time < 3.501)
+
+Data1_False_RT <- Data1_False %>%
+  filter(Correct == 1) 
+Data1_False_RT <- Data1_False_RT %>%
+  filter(Time < 3.501)
 
 
-# Rename Time
-Data2 <- Data2 %>% 
-  rename("RT" = "Time..Seconds.")
+# Calculating Reaction Time
+Data1$RT_TRUE[1] <- mean(Data1_True_RT$Time)
 
-# Making Scoring Columns
-Data2$`% correct R+` <- NA
-Data2$`% correct R-` <- NA
-Data2$`Ave RT R+` <- NA
-Data2$`Ave RT R-` <- NA
-Data2$`Tot ave RT` <- NA
-Data2$`Tot %  correct` <- NA
-
-
-# Making Rplus list and Rminus list
-Rplus <- c(2,5,9,15,16,17,20,22,23,25,27,31,32,35:46,49:51,53,54,56,63,64,66,68,69,71,73,74,75,78,80,81,82,84,87,88,89,93,100,101)
-Rminus <- 1:101
-Rminus <- setdiff(Rminus,Rplus)
-Rminus <- setdiff(Rminus,93)
-
-# Filtering for reaction time below 3501
-Data4 <- Data2[Rplus,] %>% 
-  filter(!is.na(`Correct`)) 
-# Making R+ and R- Scores
-Data2$`% correct R+`[1] <- mean(Data4$Correct)*100
-
-Data4 <- Data2[Rminus,] %>% 
-  filter(!is.na(`Correct`)) 
-Data2$`% correct R-`[1] <- mean(Data4$Correct)*100
-
-Data4 <- Data2 %>% 
-  filter(!is.na(`Correct`)) 
-Data2$`Tot %  correct`[1] <- mean(Data4$Correct)*100
-
-
-Data4 <- Data2[setdiff(Rplus,93),] %>%
-  filter(!is.na(`RT`))
-Data2$`Ave RT R+`[1] <- mean(Data4$RT)
-
-Data4 <- Data2[setdiff(Rminus,93),] %>%
-  filter(!is.na(`RT`))
-Data2$`Ave RT R-`[1] <- mean(Data4$RT)
-
-Data4 <- Data2[setdiff(1:101,93),] %>%
-  filter(!is.na(`RT`))
-Data2$`Tot ave RT`[1] <- mean(Data4$RT)
+Data1$RT_FALSE[1] <- mean(Data1_False_RT$Time)
 
 
 
+# Filtering for total reaction time
+Total_Filtered <- Data1 %>%
+  filter(Correct == 1) %>%
+  filter(Time < 3.501)
 
-# Writing the new excel sheet to the other folder
-write.xlsx(Data2, paste0("Rhyme_",participant,"_",calDate,"_",date,"_","Ordered_Scored.xlsx"),showNA = F)
+Data1$RT_Total[1] <- mean(Total_Filtered$Time)
 
 setwd(analysis)
-write.xlsx(Data2, paste0("Rhyme_",participant,"_",calDate,"_",date,"_","Ordered_Scored.xlsx"),showNA = F)
+write.xlsx(Data1, paste0(participant,"_",date_actual,"_SVT.xlsx"),showNA = F)
+
+
+
+
+
+
+
+
+

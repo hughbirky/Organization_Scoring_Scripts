@@ -12,20 +12,15 @@ library(stringr)
 library(tibble)
 library(stringdist)
 
-
-
-### For this script, you will need to do a few things. The first thing is 
-
 # Clearing the environment of previous variables
 rm(list=ls()) 
 
 # Clearing the console of previous junk
 shell("cls")
 
-
-
 participant <- c("CI216")
-date <- c("preop")
+date <- c("3 mo")
+calDate <- "06.06.2024"
 move_to_analysis <- T
 
 # Finding who's computer we are on
@@ -45,7 +40,7 @@ if(files == "hughm"){
   path <- "f"
 }
 
-
+p = 1
 for(p in 1:length(participant)){
   
   analysis <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Analysis/Scoring/Completed scoring"
@@ -206,10 +201,10 @@ for(p in 1:length(participant)){
   setwd(analysis)
   
   # Writing the new excel sheet to the other folder
-  write.xlsx(Data2, paste0(participant[p],"_",date,"_Consonant_Scored1.xlsx"),showNA = F)
+  write.xlsx(Data2, paste0(participant[p],"_",date,"_Consonant_Scored.xlsx"),showNA = F)
   
   setwd(path)
-  write.xlsx(Data2, paste0(participant[p],"_",date,"_Consonant_Scored1.xlsx"),showNA = F)
+  write.xlsx(Data2, paste0(participant[p],"_",date,"_Consonant_Scored.xlsx"),showNA = F)
   
   
   
@@ -356,6 +351,13 @@ for(p in 1:length(participant)){
   Data1$`Reaction Time` <- as.double(Data1$`Reaction Time`)
   Data$`Reaction Time` <- as.double(Data$`Reaction Time`)
   
+  Data1$`UTC Date and Time` <- as.character(Data1$`UTC Date and Time`)
+  Data$`UTC Date and Time` <- as.character(Data$`UTC Date and Time`)
+  Data1$`Local Date and Time` <- as.character(Data1$`Local Date and Time`)
+  Data$`Local Date and Time` <- as.character(Data$`Local Date and Time`)
+  Data1$`Participant OS` <- as.character(Data1$`Participant OS`)
+  Data$`Participant OS` <- as.character(Data$`Participant OS`)
+  
   # Binding rows
   Data2 <- bind_rows(Data1,Data)
   
@@ -375,6 +377,10 @@ for(p in 1:length(participant)){
   total <- 0
   overallTotal <- 0
   count <- 0
+  
+  
+  v = 1
+  i = 1
   # Checking which vowel it is and summing
   for(v in 1:length(vowels)){
     # Adding the vowel total column
@@ -408,12 +414,12 @@ for(p in 1:length(participant)){
   setwd(analysis)
   
   # Writing the new excel sheet to the other folder
-  write.xlsx(Data2, paste0(participant[p],"_",date,"_Vowel_Scored1.xlsx"),showNA = F)
+  write.xlsx(Data2, paste0(participant[p],"_",date,"_Vowel_Scored.xlsx"),showNA = F)
   
   setwd(path)
   
   # Writing the new excel sheet to the other folder
-  write.xlsx(Data2, paste0(participant[p],"_",date,"_Vowel_Scored1.xlsx"),showNA = F)
-  setwd("C:/Users/hughm/OneDrive - Belmont University/Personal/Desktop")
+  write.xlsx(Data2, paste0(participant[p],"_",date,"_Vowel_Scored.xlsx"),showNA = F)
+  setwd("C:/Users/hughm/Desktop")
   
 }

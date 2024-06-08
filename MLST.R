@@ -23,8 +23,9 @@ rm(list=ls())
 shell("cls")
 
 # Participant folder name
-participant <- c("CI213")
-date <- c("preop")
+participant <- c("CI216")
+date <- c("3 mo")
+calDate <- "06.06.2024"
 move_to_analysis <- T
 
 # Finding who's computer we are on
@@ -101,4 +102,4 @@ Data <- Data %>% filter(grepl("gorilla", Response))
 
 # Writing the new excel sheet to the other folder
 write.xlsx(Data, paste0(participant,"_MLST_Filtered.xlsx"),showNA = F)
-setwd("C:/Users/hughm/OneDrive - Belmont University/Personal/Desktop")
+setwd("C:/Users/hughm/Desktop")
