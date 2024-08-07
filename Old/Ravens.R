@@ -20,9 +20,9 @@ rm(list=ls())
 
 
 # Participant folder name
-participant <- c("CI222")
-date <- c("1 mo")
-calDate <- "07.22.2024"
+participant <- c("CI200")
+date <- c("12 mo")
+calDate <- "07.30.2024"
 # date <- c("preop")
 # date <- c("1 mo")
 # date <- c("3 mo")
@@ -67,7 +67,7 @@ files <- gsub(x = files, pattern = "./", replacement = "")
 # Getting the folder we need for the visit type
 files <- files[grepl(date, files)]
 # Writing our new path to the talker discrimination
-path <- paste0(path,"/",files[1],"/Matlab Tasks/Lexical Decision Task")
+path <- paste0(path,"/",files[1],"/Matlab Tasks/RavensTask")
 # Setting the new working directory
 setwd(path)
 
@@ -94,7 +94,7 @@ files1 <- gsub(x = files1, pattern = "./", replacement = "")
 # Getting the folder we need for the visit type
 files1 <- files1[grepl(date, files1)]
 # Writing our new path to the talker discrimination
-analysis <- paste0(analysis,"/",files1[1],"/Matlab Tasks/Lexical Decision Task")
+analysis <- paste0(analysis,"/",files1[1],"/Matlab Tasks/RavensTask")
 if(!dir.exists(analysis)){
   dir.create(analysis)
 }
@@ -109,96 +109,32 @@ files <- gsub(x = files, pattern = "./", replacement = "")
 
 
 # Import excel data
-Data1 <- read_excel(files[1])
-# Computing length of original column
-length <- length(Data1$Word_num)
+Data <- read.csv(files[1])
 
-# Adding in extra rows to make it 160
-if(length < 160){
-  for(z in 1:(160 - length)){
-    Data1[nrow(Data1) + 1,] <- NA
-  }
-}
+# Calculating length of the columns
+length <- 
 
-# Creating# Creating a copy of the data frame
-Data2 <- Data1
-# Shifting rows around
+# Adding new columns
+Data$Mean_RT <- NA
+Data$Number_Correct <- NA
+Data$Number_Answered <- NA
+Data$Final_Score <- NA
 
-
-for(i in 1:length){
-  Data2[Data1$Word_num[i],] <- Data1[i,]
-}
-
-# Making rows blank otherwise
-for(f in 1:160){
-  if(f != Data2$Word_num[f]){
-    Data2[f,] <- NA
-  }
-}
-
-Data2$Correct <- NA
-
-# Scoring 
-for(c in 1:length(Data2$ParticipantAnswer)){
-  if(!is.na(Data2$ParticipantAnswer[c])){
-    if(Data2$ParticipantAnswer[c] == Data2$TrueAnswer[c]){
-      Data2$Correct[c] <- 1
-    } else{
-      Data2$Correct[c] <- 0
-    }
-  }
-}
-
-
-# Filtering by group
-group1 <- Data2[Data2$Group_num==1,] 
-group1 <- group1[!is.na(group1$Group_num),] 
-group2 <- Data2[Data2$Group_num==2,] 
-group2 <- group2[!is.na(group2$Group_num),] 
-group3 <- Data2[Data2$Group_num==3,] 
-group3 <- group3[!is.na(group3$Group_num),] 
-group4 <- Data2[Data2$Group_num==4,] 
-group4 <- group4[!is.na(group4$Group_num),] 
-group5 <- Data2[Data2$Group_num==5,] 
-group5 <- group5[!is.na(group5$Group_num),] 
-
-total <- Data2[!is.na(Data2$Group_num),]
-
-# Making scoring columns
-Data2$Total_Correct <- NA
-Data2$Total_RT <- NA
-Data2$Category1_Correct <- NA
-Data2$Category1_RT <- NA
-Data2$Category2_Correct <- NA
-Data2$Category2_RT <- NA
-Data2$Category3_Correct <- NA
-Data2$Category3_RT <- NA
-Data2$Category4_Correct <- NA
-Data2$Category4_RT <- NA
-Data2$Category5_Correct <- NA
-Data2$Category5_RT <- NA
-
-# Scoring
-Data2$Total_Correct[1] <- mean(total$Correct)*100
-Data2$Total_RT[1] <- mean(total$Time)
-Data2$Category1_Correct[1] <- mean(group1$Correct)*100
-Data2$Category1_RT[1] <- mean(group1$Time)
-Data2$Category2_Correct[1] <- mean(group2$Correct)*100
-Data2$Category2_RT[1] <- mean(group2$Time)
-Data2$Category3_Correct[1] <- mean(group3$Correct)*100
-Data2$Category3_RT[1] <- mean(group3$Time)
-Data2$Category4_Correct[1] <- mean(group4$Correct)*100
-Data2$Category4_RT[1] <- mean(group4$Time)
-Data2$Category5_Correct[1] <- mean(group5$Correct)*100
-Data2$Category5_RT[1] <- mean(group5$Time)
-
+# Calculating mean response time
+Data$Mean_RT[1] <- mean(Data$Time)
+# Calculating number correct
+Data$Number_Correct[1] <- sum(Data$Correct)
+# Calculating number answered
+Data$Number_Answered[1] <- length(Data$Answer)
+# Calculating final score
+Data$Final_Score[1] <- mean(Data$Correct) * 100
 
 setwd(analysis)
-write.xlsx(Data2, paste0(participant,"_",calDate,"_Lexical_Scored.xlsx"),showNA = F)
+write.xlsx(Data, paste0(participant,"_",calDate,"_Ravens_Scored.xlsx"),showNA = F)
 
 
 setwd(path)
 
 
 # Writing the new excel sheet to the other folder
-write.xlsx(Data2, paste0(participant,"_",calDate,"_Lexical_Scored.xlsx"),showNA = F)
+write.xlsx(Data, paste0(participant,"_",calDate,"_Ravens_Scored.xlsx"),showNA = F)

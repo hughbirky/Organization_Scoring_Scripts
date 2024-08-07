@@ -20,9 +20,9 @@ rm(list=ls())
 
 
 # Participant folder name
-participant <- c("CI216")
-date <- c("3 mo")
-calDate <- "06.06.2024"
+participant <- c("CI222")
+date <- c("1 mo")
+calDate <- "07.22.2024"
 # date <- c("preop")
 # date <- c("1 mo")
 # date <- c("3 mo")

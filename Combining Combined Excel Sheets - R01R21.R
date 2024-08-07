@@ -21,7 +21,6 @@ rm(list=ls())
 date <- c("1 mo")
 # date <- c("3 mo")
 # date <- c("6 mo")
-# date <- c("12 mo")
 
 # Finding who's computer we are on
 origin <- "C:/Users"

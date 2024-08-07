@@ -23,7 +23,7 @@ rm(list=ls())
 shell("cls")
 
 # Participant folder name
-participant <- "05.17.2024"
+participant <- "07.12.2024"
 
 # Making the current path
 path <- "C:/Users/hughm/OneDrive - VUMC/General/R01+R21 Outcomes Studies/Analysis/Code/R01R21 Scripts/Lubben"
@@ -40,7 +40,7 @@ files <- files[!grepl("Scored", files)]
 files <- files[!grepl("Old",files)]
 
 # For renaming the record IDs to their actual names
-recordID <- c("Test2","CI200","CI201","CI202","CI203","CI204","CI205","CI206_incomplete","CI207","CI208","CI209","CI210","CI211","CI212","CI213","CI214","CI215","CI216","CI217","CI218","CI219","CI220")
+recordID <- c("Test2","CI200","CI201","CI202","CI203","CI204","CI205","CI206_incomplete","CI207","CI208","CI209","CI210","CI211","CI212","CI213","CI214","CI215","CI216","CI217","CI218","CI219","CI220","CI221","CI222","CI223","CI224")
 
 
 # Import csv data

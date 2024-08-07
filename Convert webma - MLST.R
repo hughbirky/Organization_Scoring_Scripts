@@ -20,9 +20,9 @@ rm(list=ls())
 
 
 # Participant folder name
-participant <- c("CI216")
-date <- c("3 mo")
-calDate <- "06.06.2024"
+participant <- c("CI222")
+date <- c("1 mo")
+calDate <- "07.22.2024"
 # date <- c("preop")
 # date <- c("1 mo")
 # date <- c("3 mo")
@@ -74,7 +74,7 @@ for(p in 1:length(participant)){
     # Getting the folder we need for the visit type
     files <- files[grepl(date[d], files)]
     # Writing our new path to the talker discrimination
-    path <- paste0(path,"/",files[1],"/Gorilla Tasks/Nonword/uploads")
+    path <- paste0(path,"/",files[1],"/Gorilla Tasks/MLST/uploads")
     # Setting the new working directory
     if(!dir.exists(path)){
       next
