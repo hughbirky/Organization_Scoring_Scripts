@@ -18,11 +18,11 @@ rm(list=ls())
 
 # participant <- c("CI200","CI201","CI202","CI203","CI204","CI205","CI207","CI208","CI209","CI210","CI211","CI213","CI214","CI215","CI216","CI216","CI217")
 # participant <- "CI212"
-participant <- "CI222"
+participant <- "CI205"
 # date <- c("preop")
-date <- c("1 mo")
+# date <- c("1 mo")
 # date <- c("3 mo")
-# date <- c("6 mo")
+date <- c("6 mo")
 # date <- c("12 mo")
 
 tasky <- 10

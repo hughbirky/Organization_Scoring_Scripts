@@ -18,9 +18,9 @@ shell("cls")
 rm(list=ls()) 
 
 # date <- c("preop")
-date <- c("1 mo")
+# date <- c("1 mo")
 # date <- c("3 mo")
-# date <- c("6 mo")
+date <- c("6 mo")
 # date <- c("12 mo")
 
 # Finding who's computer we are on
